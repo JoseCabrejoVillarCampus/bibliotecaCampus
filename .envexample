@@ -1,0 +1,3 @@
+MY_CONFIG={}
+MY_CONNECT={}
+JWT_PRIVATE_KEY="campus"
