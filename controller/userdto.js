@@ -7,42 +7,59 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Expose, Type } from 'class-transformer';
-import { IsDefined, MaxLength, MinLength, IsNumber, IsEmail, IsString } from 'class-validator';
+import { Expose, Transform } from 'class-transformer';
+import { IsNumber, IsEmail, IsString } from 'class-validator';
 export class usuarioDTO {
-    constructor(ID, nom_com, ema, psw) {
+    constructor(ID, nom_com, ema, psw, ID2) {
         this.ID = ID;
         this.nom_com = nom_com;
         this.ema = ema;
         this.psw = psw;
+        this.ID2 = ID2;
     }
 }
 __decorate([
     Expose({ name: 'id' }),
-    IsNumber({}, { message: () => { throw { status: 422, message: `El id no cumple con el formato` }; } }),
-    IsDefined({ message: () => { throw { status: 422, message: `El parametro id es obligatorio` }; } }),
+    IsNumber(),
+    Transform(({ value }) => { if (/^[0-9]+$/.test(value) || value == undefined)
+        return Math.floor(value);
+    else
+        throw { status: 400, message: `El dato usuario incumple los parametros acordados` }; }, { toClassOnly: true }),
     __metadata("design:type", Number)
 ], usuarioDTO.prototype, "ID", void 0);
 __decorate([
     Expose({ name: 'nombre' }),
-    IsString({ message: () => { throw { status: 422, message: `El nombre no cumple con el formato` }; } })
-    // @Transform(({ value }) => { if(/^[a-z A-Z]+$/.test(value)) return value ; else throw {status: 422, message: `El datos nombre no cunple con los parametros acordados`};}, { toClassOnly: true })
-    ,
+    IsString(),
+    Transform(({ value }) => { if (/^[a-z A-Z áéíóúÁÉÍÓÚñÑüÜ 0-9]+$/.test(value))
+        return value;
+    else
+        throw { status: 400, message: `El dato tipo_categoria incumple los parametros acordados` }; }, { toClassOnly: true }),
     __metadata("design:type", String)
 ], usuarioDTO.prototype, "nom_com", void 0);
 __decorate([
     Expose({ name: 'email' }),
-    IsEmail({}, { message: () => { throw { status: 422, message: `El email no cumple con el formato` }; } }),
-    IsDefined({ message: () => { throw { status: 422, message: `El parametro email es obligatorio` }; } })
-    // @Transform(({ value }) => { if(/\S+@\S+\.\S+/.test(value)) return value ; else throw {status: 422, message: `El datos email no cunple con los parametros acordados`};}, { toClassOnly: true })
-    ,
+    IsEmail(),
+    Transform(({ value }) => { if (/^[a-z A-Z áéíóúÁÉÍÓÚñÑüÜ 0-9]+$/.test(value))
+        return value;
+    else
+        throw { status: 400, message: `El dato tipo_categoria incumple los parametros acordados` }; }, { toClassOnly: true }),
     __metadata("design:type", String)
 ], usuarioDTO.prototype, "ema", void 0);
 __decorate([
     Expose({ name: 'password' }),
-    IsDefined({ message: () => { throw { status: 422, message: `El parametro password es obligatorio` }; } }),
-    MinLength(8, { message: () => { throw { status: 411, message: `El password debe ser mas de 8 caracteres` }; } }),
-    MaxLength(12, { message: () => { throw { status: 411, message: `El password supero el limite :(` }; } }),
-    Type(() => String),
+    IsString(),
+    Transform(({ value }) => { if (/^[a-z A-Z áéíóúÁÉÍÓÚñÑüÜ 0-9]+$/.test(value))
+        return value;
+    else
+        throw { status: 400, message: `El dato tipo_categoria incumple los parametros acordados` }; }, { toClassOnly: true }),
     __metadata("design:type", String)
 ], usuarioDTO.prototype, "psw", void 0);
+__decorate([
+    Expose({ name: 'idd' }),
+    IsNumber(),
+    Transform(({ value }) => { if (/^[0-9]+$/.test(value) || value == undefined)
+        return Math.floor(value);
+    else
+        throw { status: 400, message: `El dato idd incumple los parametros acordados` }; }, { toClassOnly: true }),
+    __metadata("design:type", Number)
+], usuarioDTO.prototype, "ID2", void 0);

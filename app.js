@@ -1,5 +1,7 @@
+import dotenv from 'dotenv';
 import express from "express";
-import appCliente from './routers/cliente.js';
+import cookieParser from 'cookie-parser';
+import storageUsuario from "./routes/usuario.js";
 
 dotenv.config();
 const appExpress = express();
@@ -7,8 +9,7 @@ const appExpress = express();
 appExpress.use(express.json());
 appExpress.use(cookieParser());
 appExpress.use(express.json());
-appExpress.use("/campus", appCliente);
+appExpress.use("/usuario", storageUsuario);
 
-appExpress.listen(config, ()=>{
-    console.log(`http://${config.hostname}:${config.port}`);
-})
+const config =JSON.parse(process.env.MY_CONFIG);
+appExpress.listen(config, ()=>console.log(`http://${config.hostname}:${config.port}`));
