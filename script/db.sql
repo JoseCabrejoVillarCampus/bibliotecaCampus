@@ -197,3 +197,5 @@ INSERT INTO reserva (id_reserva, id_usuario, id_libro, fecha_reserva, fecha_rese
 (8, 8, 2, '2023-07-17', '2023-07-24', 'Pendiente'),
 (9, 9, 9, '2023-07-18', '2023-07-25', 'Confirmada'),
 (10, 10, 5, '2023-07-19', '2023-07-26', 'Pendiente');
+
+SELECT * FROM usuario;
