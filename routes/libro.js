@@ -67,7 +67,24 @@ const getLibroByEstado = (estado) => {
     });
     });
 };
-storageLibro.get("/:id?", proxyLibro , async (req,res)=>{
+const getLibroByDisponible = () => {
+    return new Promise((resolve, reject) => {
+    const sql = [`SELECT l.* , el.nombre AS id_estado,
+    el.descripcion AS descripcion
+    FROM libro l
+    INNER JOIN estado_libro el ON l.id_libro = el.id_estado
+    LEFT JOIN estado_libro el2 ON l.id_libro = el.descripcion
+    WHERE el.nombre = 'Disponible'`];
+    con.query(...sql, (err, data) => {
+        if (err) {
+        reject(err);
+        } else {
+        resolve(data);
+        }
+    });
+    });
+};
+storageLibro.get("/", proxyLibro , async (req,res)=>{
     try {
         const { id, estado} = req.query;
         if (id) {
@@ -98,6 +115,15 @@ storageLibro.get("/:id?", proxyLibro , async (req,res)=>{
         res.sendStatus(500);
     }
 })
+storageLibro.get("/disponible", proxyLibro, async (req, res) => {
+    try {
+        const data = await getLibroByDisponible();
+        res.send(data);
+    } catch (err) {
+        console.error("Ocurrió un error al procesar la solicitud", err.message);
+        res.sendStatus(500);
+    }
+});
 storageLibro.post("/", proxyLibro ,async (req, res) => {
     con.query( 
         /*sql*/

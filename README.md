@@ -259,9 +259,15 @@ http://127.10.16.15:5027/autor?id=2
 ```
 http://127.10.16.15:5027/libro?id=2
 ```
+## Consulta Libro por Disponibilidad
+
+```
+http://127.10.16.15:5027/libro/disponible
+```
 ## Consulta Libro por estado
 
 ```
+
 http://127.10.16.15:5027/libro?estado=2
 ```
 
