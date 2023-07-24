@@ -264,6 +264,11 @@ http://127.10.16.15:5027/libro?id=2
 ```
 http://127.10.16.15:5027/libro/disponible
 ```
+## Consulta Libro por Prestado
+
+```
+http://127.10.16.15:5027/libro/prestado
+```
 ## Consulta Libro por estado
 
 ```
