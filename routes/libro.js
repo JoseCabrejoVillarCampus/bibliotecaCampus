@@ -78,7 +78,11 @@ storageLibro.get("/:id?", proxyLibro , async (req,res)=>{
             res.send(data); 
         } else {
             const sql = [
-                `SELECT * FROM libro;`
+                `SELECT l. id_libro, titulo  , a.nombre AS autor,
+                e.nombre AS editorial
+                FROM libro l
+                INNER JOIN autor a ON l.id_libro = a.id_autor
+                INNER JOIN editorial e ON l.id_libro = e.id_editorial;`
             ];
             con.query(...sql, (err, data) => {
                 if (err) {
