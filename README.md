@@ -264,3 +264,24 @@ http://127.10.16.15:5027/libro?id=2
 ```
 http://127.10.16.15:5027/libro?estado=2
 ```
+
+## Consulta Prestamo
+
+```
+http://127.10.16.15:5027/prestamo
+```
+## Consulta Prestamo por id
+
+```
+http://127.10.16.15:5027/prestamo?id=2
+```
+## Consulta Reserva
+
+```
+http://127.10.16.15:5027/reserva
+```
+## Consulta Reserva por id
+
+```
+http://127.10.16.15:5027/reserva?id=2
+```

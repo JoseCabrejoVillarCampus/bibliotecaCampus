@@ -198,8 +198,12 @@ INSERT INTO reserva (id_reserva, id_usuario, id_libro, fecha_reserva, fecha_rese
 (9, 9, 9, '2023-07-18', '2023-07-25', 'Confirmada'),
 (10, 10, 5, '2023-07-19', '2023-07-26', 'Pendiente');
 
-SELECT * FROM prestamo;
-
+SELECT * FROM reserva;
+SELECT r. id_reserva, fecha_reserva, fecha_reserva_fin, estado , u.nombre AS usuario,
+l.titulo AS libro
+FROM reserva r
+INNER JOIN usuario u ON r.id_reserva = u.id_usuario
+INNER JOIN libro l ON r.id_reserva = l.id_editorial;
 SELECT p. id_prestamo, fecha_prestamo, fecha_devolucion, estado , a.nombre AS autor,
 l.titulo AS libro
 FROM prestamo p
