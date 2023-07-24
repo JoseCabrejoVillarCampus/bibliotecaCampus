@@ -37,24 +37,62 @@ storageLibro.use((req, res, next) => {
     con = mysql.createPool(myConfig)
     next();
 }) 
-storageLibro.get("/:id?", proxyLibro , async (req,res)=>{
-    const jwt = req.session.jwt;
-    const encoder = new TextEncoder();  
-    const jwtData = await jwtVerify(
-        jwt,
-        encoder.encode(process.env.JWT_PRIVATE_KEY)
-    )
-    if (jwtData.payload.id && jwtData.payload.id !== req.params.id) {
-        return res.sendStatus(403);
-    }
-    let sql = (jwtData.payload.id)
-        ? [`SELECT * FROM libro WHERE id_libro = ?`, jwtData.payload.id] 
-        : [`SELECT * FROM libro`];
-    con.query(...sql,
-        (err, data, fie)=>{
-            res.send(data);
+storageLibro.use(expressQueryBoolean());
+const getLibroById = (id) => {
+    return new Promise((resolve, reject) => {
+    const sql = [`SELECT * FROM libro WHERE id_libro = ?`, id];
+    con.query(...sql, (err, data) => {
+        if (err) {
+        reject(err);
+        } else {
+        resolve(data);
         }
-    ); 
+    });
+    });
+};
+const getLibroByEstado = (estado) => {
+    return new Promise((resolve, reject) => {
+    const sql = [`SELECT l.* , el.nombre AS id_estado,
+    el.descripcion AS descripcion
+    FROM libro l
+    INNER JOIN estado_libro el ON l.id_libro = el.id_estado
+    LEFT JOIN estado_libro el2 ON l.id_libro = el.descripcion
+    WHERE el.nombre = ?`, estado];
+    con.query(...sql, (err, data) => {
+        if (err) {
+        reject(err);
+        } else {
+        resolve(data);
+        }
+    });
+    });
+};
+storageLibro.get("/:id?", proxyLibro , async (req,res)=>{
+    try {
+        const { id, estado} = req.query;
+        if (id) {
+            const data = await getLibroById(id);
+            res.send(data);
+        } else if (estado) {
+            const data = await getLibroByEstado(estado);
+            res.send(data); 
+        } else {
+            const sql = [
+                `SELECT * FROM libro;`
+            ];
+            con.query(...sql, (err, data) => {
+                if (err) {
+                    console.error("Ocurrió un error intentando traer los datos de tareas", err.message);
+                    res.status(err.status || 500);
+                } else {
+                    res.send(data);
+                }
+            });
+        }
+    } catch (err) {
+        console.error("Ocurrió un error al procesar la solicitud", err.message);
+        res.sendStatus(500);
+    }
 })
 storageLibro.post("/", proxyLibro ,async (req, res) => {
     con.query( 

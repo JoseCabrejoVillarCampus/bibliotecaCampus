@@ -198,7 +198,14 @@ INSERT INTO reserva (id_reserva, id_usuario, id_libro, fecha_reserva, fecha_rese
 (9, 9, 9, '2023-07-18', '2023-07-25', 'Confirmada'),
 (10, 10, 5, '2023-07-19', '2023-07-26', 'Pendiente');
 
-SELECT * FROM autor;
-
+SELECT * FROM estado_libro;
+SELECT l.* , el.nombre AS id_estado,
+el.descripcion AS descripcion
+FROM libro l
+INNER JOIN estado_libro el ON l.id_libro = el.id_estado
+LEFT JOIN estado_libro el2 ON l.id_libro = el.descripcion
+WHERE el.nombre = 'Disponible';
+SELECT l.*
+FROM libro l WHERE l.id_estado= 1;
 SELECT a.*
 FROM autor a WHERE a.nacionalidad= ?;

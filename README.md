@@ -248,3 +248,19 @@ Donde '?', es el nombre de cualquier tabla, nos arrojara el contenido de estas m
 http://127.10.16.15:5027/autor?nacionalidad=Colombiano
 ```
 
+## Consulta Autor por id
+
+```
+http://127.10.16.15:5027/autor?id=2
+```
+
+## Consulta Libro por id
+
+```
+http://127.10.16.15:5027/libro?id=2
+```
+## Consulta Libro por estado
+
+```
+http://127.10.16.15:5027/libro?estado=2
+```
