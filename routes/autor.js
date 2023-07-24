@@ -37,24 +37,58 @@ storageAutor.use((req, res, next) => {
     con = mysql.createPool(myConfig)
     next();
 }) 
-storageAutor.get("/:id?", proxyAutor , async (req,res)=>{
-    const jwt = req.session.jwt;
-    const encoder = new TextEncoder();  
-    const jwtData = await jwtVerify(
-        jwt,
-        encoder.encode(process.env.JWT_PRIVATE_KEY)
-    )
-    if (jwtData.payload.id && jwtData.payload.id !== req.params.id) {
-        return res.sendStatus(403);
-    }
-    let sql = (jwtData.payload.id)
-        ? [`SELECT * FROM autor WHERE id_autor = ?`, jwtData.payload.id] 
-        : [`SELECT * FROM autor`];
-    con.query(...sql,
-        (err, data, fie)=>{
-            res.send(data);
+storageAutor.use(expressQueryBoolean());
+const getAutorById = (id) => {
+    return new Promise((resolve, reject) => {
+    const sql = [`SELECT * FROM autor WHERE id_autor = ?`, id];
+    con.query(...sql, (err, data) => {
+        if (err) {
+        reject(err);
+        } else {
+        resolve(data);
         }
-    ); 
+    });
+    });
+};
+const getAutorByNacionalidad = (nacionalidad) => {
+    return new Promise((resolve, reject) => {
+    const sql = [`SELECT a.*
+    FROM autor a WHERE a.nacionalidad= ?`, nacionalidad];
+    con.query(...sql, (err, data) => {
+        if (err) {
+        reject(err);
+        } else {
+        resolve(data);
+        }
+    });
+    });
+};
+storageAutor.get("/:id?", proxyAutor , async (req,res)=>{
+    try {
+        const { id, nacionalidad} = req.query;
+        if (id) {
+            const data = await getAutorById(id);
+            res.send(data);
+        } else if (nacionalidad) {
+            const data = await getAutorByNacionalidad(nacionalidad);
+            res.send(data); 
+        } else {
+            const sql = [
+                `SELECT * FROM autor;`
+            ];
+            con.query(...sql, (err, data) => {
+                if (err) {
+                    console.error("Ocurrió un error intentando traer los datos de tareas", err.message);
+                    res.status(err.status || 500);
+                } else {
+                    res.send(data);
+                }
+            });
+        }
+    } catch (err) {
+        console.error("Ocurrió un error al procesar la solicitud", err.message);
+        res.sendStatus(500);
+    }
 })
 storageAutor.post("/", proxyAutor ,async (req, res) => {
     con.query( 
